@@ -1,0 +1,47 @@
+﻿@using MedicalAppointmentsTracker.Models
+@using System.Text.Json
+@using Microsoft.AspNetCore.Http;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    var userData = Context?.Session.GetString("UserData");
+    var userObj = userData != null ? JsonSerializer.Deserialize<UserSession>(userData) : null;
+}
+
+@if (userObj != null)
+{
+    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+        <ul class="navbar-nav flex-grow-1">
+           
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-page="/Appointments/Index">My Appointments</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="collapse navbar-collapse justify-content-end">
+        <ul class="navbar-nav flex-grow-0 pe-2">
+            <li class="nav-item">
+                <span class="nav-link text-dark">Hello, @userObj.Name</span>
+            </li>
+        </ul>
+        <form method="post" asp-page="/Account/Logout">
+            <button type="submit" class="btn btn-outline-danger">Logout</button>
+        </form>
+    </div>
+
+}
+else
+{
+    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+        <ul class="navbar-nav flex-grow-0">
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-page="/Account/Login">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-page="/Account/Register">Register</a>
+            </li>
+        </ul>
+    </div>
+}
+

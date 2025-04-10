@@ -1,0 +1,92 @@
+﻿@page
+@model MedicalAppointmentsTracker.Pages.Appointments.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+
+
+<p>
+    <strong class="text-black">Appointments List</strong>
+    <a asp-page="Create" class="btn btn-primary btn-sm float-end">Create New</a>
+</p>
+
+@if (Model.Appointment != null)
+{
+    <p class="alert alert-info">
+        <strong>Total Appointments : @Model.Appointment.Count()</strong> <br />
+        <strong>Upcoming Appointments:</strong> @Model.Appointment.Count(x => x.Status == "Upcoming") <br />
+        <strong>Cancelled Appointments:</strong> @Model.Appointment.Count(x => x.Status == "Cancelled") <br />
+        <strong>Completed Appointments:</strong> @Model.Appointment.Count(x => x.Status == "Completed") <br />
+    </p>
+}
+
+<form id="myForm">
+    <p>
+        <label>
+            Status:
+            <select asp-for="Status" asp-items="AppointmentHelper.StatusList" class="form-control">
+                <option value="">All</option>
+            </select>
+        </label>
+        <label class="px-2">
+            Start Date:
+            <input asp-for="AppointmentStartDate" class="form-control" />
+        </label>
+        <label class="px-2">
+            End Date:
+            <input asp-for="AppointmentEndDate" class="form-control" />
+        </label>
+        <input type="submit" value="Filter" class="btn btn-outline-primary mb-2" />
+
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].Provider)
+            </th>
+            <th>
+                <a class="text-dark text-decoration-none" asp-page="./Index" asp-route-status="@Model.Status" asp-route-appointmentStartDate="@Model.AppointmentStartDate?.ToString("yyyy-MM-dd")"
+                   asp-route-appointmentEndDate="@Model.AppointmentEndDate?.ToString("yyyy-MM-dd")"
+                   asp-route-sortOrder="@(Model.CurrentSort == "date_desc" ? "date_asc" : "date_desc")">
+                    Appointment Date @((Model.CurrentSort == "date_desc") ? "▼" : "▲")
+                </a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].Reason)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Appointment[0].Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Appointment)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Provider)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AppointmentDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reason)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
